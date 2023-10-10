@@ -17,6 +17,9 @@ import java.util.Scanner;
 public class NewDataHub {
 
 	private ArrayList<Post> posts;
+	private ArrayList<User> users;
+
+	private static User currentUser;
 
 	private FileInputStream fis;
 	private ObjectInputStream ois;
@@ -26,6 +29,7 @@ public class NewDataHub {
 	public NewDataHub() {
 		// declare arraylist
 		posts = new ArrayList<Post>();
+		users = new ArrayList<User>();
 
 		// finding csv file
 		String filePath = "src\\posts.csv";
@@ -83,9 +87,12 @@ public class NewDataHub {
 
 	// added users into app
 	public void UserLists() {
-		User[] arryOfUsers = { 
+		User[] arrOfUsers = { 
 				 User user1 = new User("user1", "password1", "John", "Doe");
 			        User user2 = new User("user2", "password2", "Jane", "Smith");
+		};
+		for (int i = 0; i < arrOfUsers.length; i++) {
+			users.add(arrOfUsers[i]);
 		}
 		
 
@@ -122,6 +129,135 @@ public class NewDataHub {
 		// Bulk import social media posts from a CSV file
 		// vipUser.bulkImportPosts("posts.csv");
 
+	}
+
+	public void StartMenu() {
+		boolean flag = true;
+		Scanner input = new Scanner(System.in);
+
+		while (flag) {
+			System.out.println("Welcome to the New Data Hub!");
+			System.out.println("1. Sign Up");
+			System.out.println("2. Log In");
+			System.out.println("3. Exit");
+			System.out.print("Please select an option: ");
+
+			int option = input.nextInt();
+			input.nextLine();
+			switch (option) {
+			case 1:
+				SignUp();
+				break;
+			case 2:
+				logIn();
+				break;
+			case 3:
+				System.out.println("Goodbye!");
+				input.close();
+				return;
+			default:
+				System.out.println("Invalid choice. Please try again.");
+			}
+		}
+
+	}
+
+	public void SignUp() {
+		Scanner input = new Scanner(System.in);
+		System.out.print("Enter a username: ");
+		String username = input.nextLine();
+
+		// Check if the username is already taken
+		for (User user : users) {
+			if (user.getUsername().equals(username)) {
+				System.out.println("Username already taken. Please choose another one.");
+				return;
+			}
+		}
+		System.out.print("Enter a password: ");
+		String password = input.nextLine();
+
+		System.out.print("Enter your first name: ");
+		String firstName = input.nextLine();
+
+		System.out.print("Enter your last name: ");
+		String lastName = input.nextLine();
+
+		User newUser = new User(username, password, firstName, lastName);
+		users.add(newUser);
+
+		System.out.println("Sign up successful! You can now log in.");
+	}
+
+	public void logIn() {
+		Scanner input = new Scanner(System.in);
+		System.out.print("Enter your username: ");
+		String username = input.nextLine();
+
+		System.out.print("Enter your password: ");
+		String password = input.nextLine();
+
+		for (User user : users) {
+			if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
+				currentUser = user;
+				System.out.println("Welcome, " + user.getFullName() + "!");
+				DisplayProfileMenu();
+				return;
+			}
+		}
+
+		System.out.println("Invalid username or password. Please try again.");
+	}
+
+	public void DisplayProfileMenu() {
+		while (true) {
+			System.out.println("User Profile Menu");
+			System.out.println("1. View Profile");
+			System.out.println("2. Edit Profile");
+			System.out.println("3. Log Out");
+			System.out.print("Please select an option: ");
+
+			Scanner input = new Scanner(System.in);
+			int option = input.nextInt();
+			input.nextLine(); // Consume newline character
+
+			switch (option) {
+			case 1:
+				viewProfile();
+				break;
+			case 2:
+				editProfile();
+				break;
+			case 3:
+				currentUser = null;
+				System.out.println("Logged out. Returning to the main menu.");
+				return;
+			default:
+				System.out.println("Invalid choice. Please try again.");
+			}
+		}
+	}
+
+	public static void viewProfile() {
+		System.out.println("User Profile:");
+		System.out.println("Username: " + currentUser.getUsername());
+		System.out.println("Full Name: " + currentUser.getFullName());
+		System.out.println("Password: " + currentUser.getPassword());
+	}
+
+	public static void editProfile() {
+		Scanner input = new Scanner(System.in);
+		System.out.print("Enter your new first name: ");
+		String newFirstName = input.nextLine();
+
+		System.out.print("Enter your new last name: ");
+		String newLastName = input.nextLine();
+
+		System.out.print("Enter your new password: ");
+		String newPassword = input.nextLine();
+
+		currentUser.editProfile(newFirstName, newLastName, newPassword);
+		System.out.println("Profile updated successfully!");
 	}
 
 	public void menu() {
