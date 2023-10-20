@@ -19,6 +19,8 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import NewDataHub.User;
+
 /**
  *
  * @author s3898839
@@ -106,10 +108,10 @@ public class NewDataHubGUI extends javax.swing.JFrame {
 
 				for (User user : users) {
 					if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
-						currentUser = user;
+						setCurrentUser(user);
 
 						JOptionPane.showConfirmDialog(null, "Welcome, " + user.getFullName() + "!");
-						DisplayProfileMenu displayProfileMenu = new DisplayProfileMenu();
+						ProfileMenu.run3();
 						return;
 					}
 				}
@@ -193,6 +195,23 @@ public class NewDataHubGUI extends javax.swing.JFrame {
 				new NewDataHubGUI().setVisible(true);
 			}
 		});
+	}
+
+	public void UserLists() {
+		User[] arrOfUsers = { 
+				 User user1 = new User("user1", "password1", "John", "Doe");
+			        User user2 = new User("user2", "password2", "Jane", "Smith");
+		};
+		for (int i = 0; i < arrOfUsers.length; i++) {
+			users.add(arrOfUsers[i]);
+		}
+
+	public static User getCurrentUser() {
+		return currentUser;
+	}
+
+	public static void setCurrentUser(User currentUser) {
+		NewDataHubGUI.currentUser = currentUser;
 	}
 
 	private javax.swing.JLabel jLabel1;
